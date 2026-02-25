@@ -102,10 +102,6 @@ export default function TopBar() {
 
   const isLight = theme === "light";
 
-  const headerGlass = isLight
-    ? "backdrop-blur-md bg-white/70 supports-[backdrop-filter]:bg-white/60 border-black/10"
-    : "backdrop-blur-md bg-black/30 supports-[backdrop-filter]:bg-black/22 border-white/10";
-
   const brandClass = isLight ? "text-black" : "text-white";
   const linkClass = isLight ? "text-black/75 hover:text-black" : "text-white/80 hover:text-white";
   const pillClass = isLight
@@ -117,12 +113,58 @@ export default function TopBar() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50">
-        <div className="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10">
-          <div
-            className={`mt-4 rounded-xl3 border ${headerGlass} shadow-[0_18px_60px_rgba(0,0,0,0.22)]`}
-          >
-            <div className="flex items-center justify-between px-4 py-3 sm:px-5">
-              {/* Brand */}
+        <div className="w-full">
+          <div className="relative overflow-hidden rounded-xl3">
+
+            {/* ── Gradient blur layers ── */}
+            <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+              <div
+                className="absolute inset-0 backdrop-blur-md"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
+                }}
+              />
+              <div
+                className="absolute inset-0 backdrop-blur-sm"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent 100%)",
+                }}
+              />
+              <div
+                className="absolute inset-0 backdrop-blur-[3px]"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 40%, transparent 100%)",
+                }}
+              />
+              <div
+                className="absolute inset-0 backdrop-blur-[2px]"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
+                }}
+              />
+              <div
+                className="absolute inset-0 backdrop-blur-[1px]"
+                style={{
+                  maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+                }}
+              />
+              <div
+                className={`absolute inset-0 ${
+                  isLight
+                    ? "bg-gradient-to-b from-white/70 via-white/40 to-transparent"
+                    : "bg-gradient-to-b from-black/40 via-black/20 to-transparent"
+                }`}
+              />
+
+
+            </div>
+
+            <div className="relative max-w-[1240px] mx-auto flex items-center justify-between px-4 py-3 sm:px-5">
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -134,7 +176,7 @@ export default function TopBar() {
                 <span
                   className={`
                     grid h-9 w-9 place-items-center rounded-2xl border
-                    ${isLight ? "border-black/10 bg-black/5" : "border-white/12 bg-white/[0.06]"}
+                    ${isLight ? "border-black/10 bg-black/5" : "border-white/30 bg-white/[0.06]"}
                   `}
                 >
                   <span
