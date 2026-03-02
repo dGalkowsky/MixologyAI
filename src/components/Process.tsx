@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import Reveal from "./ui/Reveal";
 import NotchCard from "./ui/NotchCard";
 import PillButton from "./ui/PillButton";
+import MartiniGlassIcon from "./ui/MartiniGlassIcon";
 
 function cx(...cls: Array<string | false | undefined | null>) {
   return cls.filter(Boolean).join(" ");
@@ -153,7 +154,7 @@ function FlowWide() {
           </div>
 
           <span className="hidden sm:grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/10 bg-black/5 text-black/70">
-            ✦
+            <MartiniGlassIcon className="h-5 w-5 text-black/70" />
           </span>
         </div>
 
@@ -246,7 +247,7 @@ export default function ProcessLight() {
     <section
       id="process"
       data-header-theme="light"
-      className="relative w-full overflow-hidden bg-white text-black"
+      className="relative w-full min-h-[100svh] overflow-hidden bg-white text-black"
     >
       {/* soft blobs - like previous light section */}
       <div className="pointer-events-none absolute -top-28 -left-28 h-[520px] w-[520px] rounded-full bg-[rgba(222,116,50,0.10)] blur-3xl" />

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import Reveal from "./ui/Reveal";
 import NotchCard from "./ui/NotchCard";
 import PillButton from "./ui/PillButton";
+import MartiniGlassIcon from "./ui/MartiniGlassIcon";
 
 function cx(...cls: Array<string | false | undefined | null>) {
   return cls.filter(Boolean).join(" ");
@@ -47,20 +48,20 @@ function ServiceCard({ s, className }: { s: Service; className?: string }) {
         className="pointer-events-none absolute inset-0 rounded-xl3 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
       />
 
-      <div className="relative p-6">
+      <div className="relative p-4 sm:p-6 break-words">
         <div className="flex items-start justify-between gap-5">
           <div className="min-w-0">
             <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-white/55">
               {s.tag}
             </div>
-            <div className="mt-2 font-display text-[20px] font-[900] leading-[1.06] tracking-[-0.03em] text-white">
+            <div className="mt-2 font-display text-[clamp(16px,4vw,20px)] font-[900] leading-[1.06] tracking-[-0.03em] text-white">
               {s.title}
             </div>
             <div className="mt-3 text-sm leading-7 text-white/70">{s.desc}</div>
           </div>
 
           <span className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.06] text-white/70">
-            ✦
+            <MartiniGlassIcon className="h-5 w-5 text-white/70" />
           </span>
         </div>
 
@@ -96,7 +97,7 @@ function MiniStep({
           <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-white/55">
             Step {n}
           </div>
-          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[11px] text-white/65">
+          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[11px] text-white/65 break-words">
             {title}
           </span>
         </div>
@@ -171,12 +172,12 @@ export default function ServiceDark() {
     <section
       id="services"
       data-header-theme="dark"
-      className="relative w-full overflow-hidden bg-ink text-white"
+      className="relative w-full min-h-[100svh] overflow-hidden bg-ink text-white"
     >
       <div className="pointer-events-none absolute -top-32 -left-32 h-[560px] w-[560px] rounded-full bg-white/5 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-40 -right-40 h-[720px] w-[720px] rounded-full bg-white/4 blur-3xl" />
 
-      <div className="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10 py-[clamp(72px,9vh,120px)]">
+      <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-8 lg:px-10 py-[clamp(72px,9vh,120px)]">
         <div className="grid grid-cols-12 gap-x-10 gap-y-10 items-start">
           {/* LEFT */}
           <div className="col-span-12 lg:col-span-5">
@@ -245,7 +246,7 @@ export default function ServiceDark() {
                   className="relative overflow-hidden rounded-xl3 border border-white/10 bg-white/[0.06] backdrop-blur-xl"
                 >
                   <div aria-hidden className={`absolute inset-0 ${manhattanOverlay} opacity-[0.8]`} />
-                  <div className="relative p-6">
+                  <div className="relative p-4 sm:p-6 break-words">
                     <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-white/55">
                       How it rolls
                     </div>

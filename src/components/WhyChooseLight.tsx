@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import Reveal from "./ui/Reveal";
 import NotchCard from "./ui/NotchCard";
 import CountUp from "./ui/CountUp";
+import MartiniGlassIcon from "./ui/MartiniGlassIcon";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 14, filter: "blur(6px)" },
@@ -71,7 +72,7 @@ function FlowTiles({
                 </div>
               </div>
               <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/10 bg-black/5 text-black/70">
-                ✦
+                <MartiniGlassIcon className="h-5 w-5" />
               </span>
             </div>
             <div className="mt-3 text-sm leading-7 text-black/65">{t.desc}</div>

@@ -44,7 +44,7 @@ function GlassRow({
   right: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-xl2 border border-white/10 bg-white/[0.05] px-4 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl2 border border-white/10 bg-white/[0.05] px-4 py-3">
       <span className="text-white/55">{left}</span>
       {right}
     </div>
@@ -74,9 +74,9 @@ export default function FooterDark() {
       <div className="pointer-events-none absolute -top-32 -left-32 h-[560px] w-[560px] rounded-full bg-white/5 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-40 -right-40 h-[720px] w-[720px] rounded-full bg-white/4 blur-3xl" />
 
-      <div className="relative mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10 pt-[clamp(56px,7vh,92px)] pb-[clamp(28px,4vh,52px)]">
+      <div className="relative mx-auto w-full max-w-[1240px] px-4 sm:px-8 lg:px-10 pt-[clamp(56px,7vh,92px)] pb-[clamp(28px,4vh,52px)]">
         <Reveal>
-          <div className="grid grid-cols-12 gap-10">
+          <div className="grid grid-cols-12 gap-y-4 sm:gap-10">
             {/* Brand */}
             <div className="col-span-12 lg:col-span-5">
               <div className="flex items-center gap-3">
@@ -139,7 +139,7 @@ export default function FooterDark() {
                   left="Email"
                   right={
                     <a
-                      className="text-white hover:text-white/90"
+                      className="text-white hover:text-white/90 break-all"
                       href="mailto:hello@mixologyai.com"
                     >
                       hello@mixologyai.com
@@ -151,7 +151,7 @@ export default function FooterDark() {
                   right={
                     <button
                       onClick={() => smoothScrollTo("#contact")}
-                      className="text-white hover:text-white/90"
+                      className="text-white hover:text-white/90 break-all"
                     >
                       Request demo
                     </button>
@@ -164,7 +164,7 @@ export default function FooterDark() {
                   <a
                     key={s}
                     href="#"
-                    className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[12px] font-[850] tracking-[0.08em] uppercase text-white/70 hover:bg-white/[0.10]"
+                    className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-[12px] font-[850] tracking-[0.08em] uppercase text-white/70 hover:bg-white/[0.10] text-center"
                   >
                     {s}
                   </a>

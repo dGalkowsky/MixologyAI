@@ -17,8 +17,10 @@ export default function App() {
       <Portfolio />
       <Service />
       <Process />
-      <Opinions />
-      <Footer />
+      <div className="flex flex-col min-h-[100svh]">
+        <Opinions />
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import Reveal from "./ui/Reveal";
 import NotchCard from "./ui/NotchCard";
 import PillButton from "./ui/PillButton";
+import MartiniGlassIcon from "./ui/MartiniGlassIcon";
 
 function cx(...cls: Array<string | false | undefined | null>) {
   return cls.filter(Boolean).join(" ");
@@ -177,7 +178,7 @@ function ModulesWide({
           </div>
 
           <span className="hidden sm:grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/[0.06] text-white/70">
-            ✦
+            <MartiniGlassIcon className="h-5 w-5 text-white/70" />
           </span>
         </div>
 
@@ -286,7 +287,7 @@ export default function Portfolio() {
     <section
       id="projects"
       data-header-theme="dark"
-      className="relative w-full overflow-hidden bg-ink text-white"
+      className="relative w-full min-h-[100svh] overflow-hidden bg-ink text-white"
     >
       <div className="pointer-events-none absolute -top-32 -left-32 h-[560px] w-[560px] rounded-full bg-white/5 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-40 -right-40 h-[720px] w-[720px] rounded-full bg-white/4 blur-3xl" />
@@ -402,7 +403,7 @@ export default function Portfolio() {
             </Reveal>
           </div>
 
-          <div className="col-span-12 lg:col-span-7 lg:translate-y-[-73px] lg:translate-x-[30px]">
+          <div className="col-span-12 lg:col-span-7 lg:translate-y-[-51px] lg:translate-x-[30px]">
             <Reveal delay={0.05}>
               <motion.div
                 initial={reduce ? undefined : { opacity: 0, y: 14 }}

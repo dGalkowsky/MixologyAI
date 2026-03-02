@@ -121,7 +121,7 @@ export default function TopBar() {
           <div
             className={`mt-4 rounded-xl3 border ${headerGlass} shadow-[0_18px_60px_rgba(0,0,0,0.22)]`}
           >
-            <div className="flex items-center justify-between px-4 py-3 sm:px-5">
+            <div className="flex items-center justify-between px-4 py-2 sm:py-3 sm:px-5">
               {/* Brand */}
               <button
                 onClick={(e) => {

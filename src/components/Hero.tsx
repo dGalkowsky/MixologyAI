@@ -81,7 +81,7 @@ export default function HeroOrange() {
                   text="Mixology AI. Twój personalny asystent baru."
                   start={phase !== "image"}
                   onDone={() => setPhase("rest")}
-                  className="text-[24px] font-[850] tracking-[0.05em] uppercase text-white/95"
+                  className="text-[clamp(18px,5vw,24px)] font-[850] tracking-[0.05em] uppercase text-white/95"
                 />
 
                 <motion.div
