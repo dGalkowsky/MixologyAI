@@ -47,34 +47,200 @@ export default function HeroOrange() {
           className="h-full w-full object-cover object-[50%_35%]"
           initial={{ scale: 1.16, opacity: 0.001 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
+          transition={{ duration: 1.2, ease: [0.35, 0.17, 0.3, 0.9] }}
           onAnimationComplete={() => setPhase("headline")}
         />
 
-        {/* tint - bez blur na tekstach */}
-        <div className="absolute inset-0 bg-riwa/25 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/35" />
+        {/* lżejsze przyciemnienie */}
+        <div className="absolute inset-0 bg-riwa/12 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/35 via-ink/10 to-transparent" />
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 noise" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-900/8 via-transparent to-transparent" />
       </div>
 
-      {/* subtle marquee */}
-      <div className="absolute inset-x-0 top-[72px] z-[5]">
-        <Marquee
-          speed={22}
-          className="py-2"
-          text={
-            <span className="font-display font-[450] tracking-[-0.08em] text-white/14 text-[clamp(82px,13vw,210px)] leading-none">
-              
-            </span>
-          }
-        />
-      </div>
+<motion.div
+  initial={{ opacity: 0, y: -10 }}
+  animate={
+    phase === "rest"
+      ? { opacity: 1, y: 0 }
+      : { opacity: 0, y: -10 }
+  }
+  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+  className="absolute inset-x-0 top-[72px] z-[5] pointer-events-none"
+>
+<Marquee
+  speed={35}
+  className="py-2"
+  text={
+    <span className="flex items-center gap-5 font-display font-[450] tracking-[-0.07em] text-white/20 text-[clamp(56px,9vw,132px)] leading-none blur-[0.35px] select-none whitespace-nowrap">
+      <span>CREATIVE</span>
+      <span className="inline-flex items-center justify-center text-white/20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-[0.52em] w-[0.52em]"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5H20L13.4 12V18H10.6V12L4 5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20H15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+      <span>INSPIRED</span>
+      <span className="inline-flex items-center justify-center text-white/20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-[0.52em] w-[0.52em]"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5H20L13.4 12V18H10.6V12L4 5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20H15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+      <span>PRECISE</span>
+      <span className="inline-flex items-center justify-center text-white/20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-[0.52em] w-[0.52em]"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5H20L13.4 12V18H10.6V12L4 5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20H15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+      <span>CRAFT</span>
+      <span className="inline-flex items-center justify-center text-white/20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-[0.52em] w-[0.52em]"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5H20L13.4 12V18H10.6V12L4 5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20H15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+      <span>MIXOLOGY</span>
+      <span className="inline-flex items-center justify-center text-white/20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-[0.52em] w-[0.52em]"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5H20L13.4 12V18H10.6V12L4 5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20H15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+      <span>INNOVATE</span>
+      <span className="inline-flex items-center justify-center text-white/20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-[0.52em] w-[0.52em]"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5H20L13.4 12V18H10.6V12L4 5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20H15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+      <span>FLAVOR</span>
+      <span className="inline-flex items-center justify-center text-white/20">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-[0.52em] w-[0.52em]"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5H20L13.4 12V18H10.6V12L4 5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 20H15"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </span>
+      <span>FUTURE</span>
+    </span>
+  }
+/>
+</motion.div>
+      
 
       {/* Content */}
       <div className="relative z-10 mx-auto h-[100svh] max-w-[1240px] px-5 sm:px-8 lg:px-10 pt-[68px]">
-        <div className="grid h-full grid-cols-12 items-end gap-8 pb-14">
+        <div className="flex h-full flex-col justify-end pb-14">
           {/* Left */}
-          <div className="col-span-12 lg:col-span-5">
+          <div className="relative z-20 w-full lg:w-7/12">
             <Reveal>
               <div className="text-center lg:text-left">
                 <TypewriterLine
@@ -91,25 +257,28 @@ export default function HeroOrange() {
                       ? { opacity: 1, y: 0 }
                       : { opacity: 0, y: 16 }
                   }
-                  transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+                  transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
                 >
                   <p className="mx-auto mt-4 max-w-[44ch] font-mono text-[14px] leading-[1.55] text-white/88 lg:mx-0">
                     Receptury, koszty porcji, zamienniki i spójne menu - na Twoich
-                    materiałach (RAG). Bez zgadywania, bez chaosu, bez “gdzie ja
-                    to mam zapisane”.
+                    materiałach (RAG). Bez zgadywania, bez chaosu, bez "gdzie ja
+                    to mam zapisane".
                   </p>
 
-                   <div className="mt-7 flex justify-center gap-3 lg:justify-start">
-                  {/*  <PillButton
+                  <div className="mt-7 flex justify-center gap-3 lg:justify-start">
+                    {/* 
+                    <PillButton
                       variant="dark"
                       rightPlus
                       className="inline-flex items-center rounded-full border border-white/15 bg-black/5 px-6 py-3 text-[12px] font-[850] tracking-[0.10em] uppercase text-white/85 hover:bg-white/10"
                       onClick={goContact}
                     >
                       REQUEST DEMO
-                    </PillButton> */}
+                    </PillButton> 
+                    */}
 
-                    {/*<a
+                    {/*
+                    <a
                       href="#pricing"
                       onClick={(e) => {
                         e.preventDefault();
@@ -120,7 +289,8 @@ export default function HeroOrange() {
                       className="inline-flex items-center rounded-full border border-white/15 bg-black/5 px-6 py-3 text-[12px] font-[850] tracking-[0.10em] uppercase text-white/85 hover:bg-white/10"
                     >
                       PRICING
-                    </a> */}
+                    </a>
+                    */}
                   </div>
                 </motion.div>
               </div>
@@ -128,13 +298,13 @@ export default function HeroOrange() {
           </div>
 
           {/* Right */}
-          <div className="col-span-12 lg:col-span-7">
+          <div className="absolute right-0 top-1/2 z-10 mt-10 w-full -translate-y-1/2 lg:mt-0 lg:w-7/12 lg:pr-8">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={
                 phase === "rest" ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }
               }
-              transition={{ duration: 0.55, ease: [0.2, 0.8, 0.2, 1] }}
+              transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
               className="lg:pl-8"
             >
               <div className="rounded-xl2 border border-white/12 bg-black/35 backdrop-blur-md shadow-soft">
@@ -153,7 +323,7 @@ export default function HeroOrange() {
                       </div>
                     </div>
 
-                    <div className="hidden sm:flex flex-col items-end gap-2">
+                    <div className="hidden flex-col items-end gap-2 sm:flex">
                       <div className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] font-[850] text-white/80">
                         RAG
                       </div>
@@ -187,7 +357,7 @@ export default function HeroOrange() {
                     ].map((x) => (
                       <div
                         key={x.t}
-                        className="col-span-12 sm:col-span-6 rounded-xl2 border border-white/10 bg-white/5 p-4"
+                        className="col-span-12 rounded-xl2 border border-white/10 bg-white/5 p-4 sm:col-span-6"
                       >
                         <div className="text-sm font-[850] text-white">
                           {x.t}
