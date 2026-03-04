@@ -57,47 +57,52 @@ export default function TopBar() {
     }, 140);
   }, []);
 
-  // zamknij sheet gdy przechodzisz na desktop
   useEffect(() => {
     if (isDesktop) setOpen(false);
   }, [isDesktop]);
 
-  // theme z sekcji (data-header-theme)
   useEffect(() => {
-    const sections = Array.from(document.querySelectorAll("section[id]"));
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("section[data-header-theme]")
+    );
     if (!sections.length) return;
 
-    const applyThemeFrom = (el: HTMLElement | null) => {
-      if (!el) return;
-      const t = el.dataset.headerTheme as ThemeMode | undefined;
+    const getScrollY = () => document.body.scrollTop;
+
+    const getAbsoluteTop = (el: HTMLElement): number => {
+      let top = 0;
+      let cur: HTMLElement | null = el;
+      while (cur && cur !== document.body) {
+        top += cur.offsetTop;
+        cur = cur.offsetParent as HTMLElement | null;
+      }
+      return top;
+    };
+
+    const update = () => {
+      const scrollY = getScrollY();
+
+      let matched: HTMLElement | null = null;
+      for (const section of sections) {
+        if (getAbsoluteTop(section) <= scrollY + 20) {
+          matched = section;
+        }
+      }
+
+      if (!matched) return;
+      const t = matched.dataset.headerTheme as ThemeMode | undefined;
       if (t === "light" || t === "dark") setTheme(t);
     };
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
+    update();
 
-        if (visible?.target) applyThemeFrom(visible.target as HTMLElement);
-      },
-      {
-        root: null,
-        rootMargin: "-90px 0px -75% 0px",
-        threshold: [0.12, 0.2, 0.35, 0.5],
-      }
-    );
+    document.body.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
 
-    sections.forEach((s) => obs.observe(s));
-
-    // initial
-    const first = sections.find((s) => {
-      const r = s.getBoundingClientRect();
-      return r.top <= 90 && r.bottom > 90;
-    });
-    applyThemeFrom((first as HTMLElement) ?? (sections[0] as HTMLElement));
-
-    return () => obs.disconnect();
+    return () => {
+      document.body.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   const isLight = theme === "light";
@@ -160,8 +165,6 @@ export default function TopBar() {
                     : "bg-gradient-to-b from-black/40 via-black/20 to-transparent"
                 }`}
               />
-
-
             </div>
 
             <div className="relative max-w-[1240px] mx-auto flex items-center justify-between px-4 py-3 sm:px-5">
