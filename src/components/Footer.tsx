@@ -67,12 +67,12 @@ export default function FooterDark() {
   return (
     <footer className="relative w-full overflow-hidden bg-ink text-white">
       {/* atmosphere */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.9]">
+      {/* <div className="pointer-events-none absolute inset-0 opacity-[0.9]">
         <div className={`absolute inset-0 ${manhattanOverlay}`} />
         <div className="absolute inset-0 bg-black/55" />
-      </div>
+      </div> */}
       <div className="pointer-events-none absolute -top-32 -left-32 h-[560px] w-[560px] rounded-full bg-white/5 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[720px] w-[720px] rounded-full bg-white/4 blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 h-[560px] w-[560px] translate-y-1/3 rounded-full bg-white/5 blur-3xl" />
 
       <div className="relative mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10 pt-[clamp(56px,7vh,92px)] pb-[clamp(28px,4vh,52px)]">
         <Reveal>

@@ -1,31 +1,6 @@
-import { motion, useReducedMotion } from "framer-motion";
-import { useMemo } from "react";
-import Reveal from "./ui/Reveal";
-import NotchCard from "./ui/NotchCard";
-import CountUp from "./ui/CountUp";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 14, filter: "blur(6px)" },
-  show: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.6, ease: [0.2, 0.8, 0.2, 1] },
-  },
-};
-
-const fade = {
-  hidden: { opacity: 0, filter: "blur(6px)" },
-  show: {
-    opacity: 1,
-    filter: "blur(0px)",
-    transition: { duration: 0.55, ease: [0.2, 0.8, 0.2, 1] },
-  },
-};
-
-// Manhattan cocktail tint (whiskey + vermouth) - subtle overlays
-const manhattanOverlay =
-  "bg-[radial-gradient(900px_circle_at_15%_0%,rgba(222,116,50,0.22),transparent_42%),radial-gradient(900px_circle_at_90%_10%,rgba(140,40,28,0.18),transparent_45%),radial-gradient(1100px_circle_at_55%_120%,rgba(255,196,120,0.16),transparent_55%)]";
+import { motion, useReducedMotion, useAnimationFrame } from "framer-motion";
+import { useMemo, useRef, useCallback } from "react";
+import Glass from "./ui/Glass";
 
 type Tile = {
   key: string;
@@ -34,47 +9,95 @@ type Tile = {
   desc: string;
 };
 
-function FlowTiles({
-  items,
-  speed = 22,
-}: {
-  items: Tile[];
-  speed?: number;
-}) {
+function lerpColor(t: number) {
+  const clamp = Math.max(0, Math.min(1, t));
+  const r = Math.round(80 + (222 - 80) * clamp);
+  const g = Math.round(190 + (116 - 190) * clamp);
+  const b = Math.round(250 + (50 - 250) * clamp);
+  return `${r}, ${g}, ${b}`;
+}
+
+function applyCardColor(el: HTMLElement, rgb: string) {
+  el.style.borderColor = `rgba(${rgb}, 0.30)`;
+  el.style.background = `rgba(${rgb}, 0.05)`;
+
+  const tag = el.querySelector<HTMLElement>(".c-tag");
+  const title = el.querySelector<HTMLElement>(".c-title");
+  const desc = el.querySelector<HTMLElement>(".c-desc");
+  const icon = el.querySelector<HTMLElement>(".c-icon");
+  const corner = el.querySelector<HTMLElement>(".c-corner");
+
+  if (tag) tag.style.color = `rgba(${rgb}, 0.55)`;
+  if (title) title.style.color = `rgb(${rgb})`;
+  if (desc) desc.style.color = `rgba(${rgb}, 0.70)`;
+  if (icon) {
+    icon.style.borderColor = `rgba(${rgb}, 0.30)`;
+    icon.style.background = `rgba(${rgb}, 0.08)`;
+    icon.style.color = `rgba(${rgb}, 0.70)`;
+  }
+  if (corner) corner.style.background = `rgba(${rgb}, 0.30)`;
+}
+
+function FlowTiles({ items, speed = 22 }: { items: Tile[]; speed?: number }) {
   const reduce = useReducedMotion();
+  const stripRef = useRef<HTMLDivElement>(null);
+
+  useAnimationFrame(() => {
+    if (!stripRef.current) return;
+    const vw = window.innerWidth;
+    const cards = stripRef.current.querySelectorAll<HTMLElement>(".flow-card");
+    cards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenterX = rect.left + rect.width / 2;
+      const t = 1 - cardCenterX / vw;
+      const rgb = lerpColor(t);
+      applyCardColor(card, rgb);
+    });
+  });
 
   const row = (
     <div className="flex w-max items-stretch gap-4 pr-4">
       {items.map((t) => (
         <motion.div
           key={t.key}
-          whileHover={reduce ? undefined : { y: -2 }}
           transition={{ type: "spring", stiffness: 260, damping: 18 }}
-          className="relative w-[340px] shrink-0 overflow-hidden rounded-xl3 border border-black/10 bg-white/60 backdrop-blur-md shadow-[0_16px_55px_rgba(0,0,0,0.08)]"
-        >
+          className="flow-card relative w-[340px] shrink-0 overflow-hidden backdrop-blur-lg border"
+          style={{
+            clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%)",
+            borderColor: "rgba(80,190,250,0.30)",
+            background: "rgba(80,190,250,0.05)",
+          }}>
           <div
-            aria-hidden
-            className={`pointer-events-none absolute inset-0 ${manhattanOverlay}`}
+            className="c-corner absolute w-7 h-px top-5 right-0 origin-top-right rotate-45"
+            style={{ background: "rgba(80,190,250,0.30)" }}
           />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-xl3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]"
-          />
+
           <div className="relative p-5">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-black/55">
+                <div
+                  className="c-tag text-[11px] font-[850] tracking-[0.12em] uppercase"
+                  style={{ color: "rgba(80,190,250,0.55)" }}>
                   {t.tag}
                 </div>
-                <div className="mt-2 text-sm font-[900] tracking-tight text-black">
+                <div className="c-title mt-2 text-sm font-[900] tracking-tight" style={{ color: "rgb(80,190,250)" }}>
                   {t.title}
                 </div>
               </div>
-              <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/10 bg-black/5 text-black/70">
+              <span
+                className="c-icon mt-0.5 grid h-10 w-10 shrink-0 place-items-center border text-sm"
+                style={{
+                  background: "rgba(80,190,250,0.08)",
+                  borderColor: "rgba(80,190,250,0.30)",
+                  color: "rgba(80,190,250,0.70)",
+                  clipPath: "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%)",
+                }}>
                 ✦
               </span>
             </div>
-            <div className="mt-3 text-sm leading-7 text-black/65">{t.desc}</div>
+            <div className="c-desc mt-3 text-sm leading-7" style={{ color: "rgba(80,190,250,0.70)" }}>
+              {t.desc}
+            </div>
           </div>
         </motion.div>
       ))}
@@ -82,39 +105,48 @@ function FlowTiles({
   );
 
   return (
-    <div
-      className={[
-        "relative overflow-hidden",
-        "[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]",
-      ].join(" ")}
-    >
-      {reduce ? (
-        <div className="flex w-full gap-4 overflow-x-auto pb-2">
-          {row}
-        </div>
-      ) : (
-        <motion.div
-          className="flex w-max gap-4"
-          initial={{ x: "0%" }}
-          animate={{ x: "-50%" }}
-          transition={{
-            duration: speed,
-            ease: "linear",
-            repeat: Infinity,
-            repeatType: "loop",
-          }}
-        >
-          {row}
-          {row}
-        </motion.div>
-      )}
+    <div className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 w-48 z-10"
+        style={{
+          background: "linear-gradient(to right, rgba(222,116,50,0.10) 0%, transparent 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-0 w-48 z-10"
+        style={{
+          background: "linear-gradient(to left, rgba(80,190,250,0.10) 0%, transparent 100%)",
+        }}
+      />
 
-      {!reduce && (
-        <>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent" />
-        </>
-      )}
+      <div
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+        }}>
+        {reduce ? (
+          <div ref={stripRef} className="flex w-full gap-4 overflow-x-auto pb-2">
+            {row}
+          </div>
+        ) : (
+          <motion.div
+            ref={stripRef}
+            className="flex w-max gap-4"
+            initial={{ x: "0%" }}
+            animate={{ x: "-50%" }}
+            transition={{
+              duration: speed,
+              ease: "linear",
+              repeat: Infinity,
+              repeatType: "loop",
+            }}>
+            {row}
+            {row}
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
@@ -165,191 +197,182 @@ export default function WhyChooseLight() {
         desc: "Ustalasz vibe - premium/hotel/tiki. AI trzyma to konsekwentnie.",
       },
     ],
-    []
+    [],
   );
 
   return (
-    <section
-      id="about"
-      data-header-theme="light"
-      className="relative w-full min-h-[100svh] bg-white text-black overflow-hidden"
-    >
-      {/* no grid - only soft blobs */}
-      <div className="pointer-events-none absolute -top-28 -left-28 h-[520px] w-[520px] rounded-full bg-[rgba(222,116,50,0.12)] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 -right-32 h-[620px] w-[620px] rounded-full bg-[rgba(140,40,28,0.08)] blur-3xl" />
+    <section id="about" data-header-theme="dark" className="relative w-full bg-ink text-white overflow-hidden">
+      <div className="pointer-events-none absolute -top-32 -left-32 h-[560px] w-[560px] rounded-full bg-mixology-orange/5 blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 h-[560px] w-[560px] translate-y-1/3 rounded-full bg-mixology-blue/5 blur-3xl" />
 
-      <div className="mx-auto min-h-[100svh] max-w-[1240px] px-5 sm:px-8 lg:px-10 pt-[clamp(84px,10vh,132px)] pb-[clamp(44px,7vh,96px)] flex flex-col">
-        <div className="grid grid-cols-12 gap-x-10 gap-y-10 items-start">
-          {/* LEFT */}
-          <div className="col-span-12 lg:col-span-7">
-            <Reveal>
-              <div className="flex items-center gap-3">
-                <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-black/55">
-                  02 - WHY MIXOLOGYAI
-                </div>
-                <span className="barcode h-[10px] w-[120px] bg-black/5 border border-black/10" />
-              </div>
-
-              <motion.h2
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                className="mt-5 font-display text-[clamp(34px,4.2vw,54px)] leading-[0.98] tracking-[-0.04em]"
-              >
-                Drinks that work.
-                <span className="block text-black/55">
-                  Recipes that scale - with an AI bartender.
-                </span>
-              </motion.h2>
-
-              <motion.p
-                variants={fade}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                className="mt-5 max-w-[62ch] text-[15px] leading-7 text-black/70"
-              >
-                MixologyAI pomaga budować receptury, robi szybki sanity check balansu,
-                liczy koszt porcji i pilnuje spójności menu. Działa na Twoich zasadach - więc
-                wynik jest użyteczny, a nie “kreatywny”.
-              </motion.p>
-
-              {/* prompt -> answer card */}
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                className="mt-8"
-              >
-                <NotchCard
-                  variant="paper"
-                  notch="both"
-                  className="relative overflow-hidden rounded-xl3 bg-white/60 backdrop-blur-md border border-black/10 shadow-soft"
-                >
-                  <div
-                    aria-hidden
-                    className={`pointer-events-none absolute inset-0 ${manhattanOverlay}`}
-                  />
-                  <div className="relative p-6 sm:p-7">
-                    <div className="flex items-start justify-between gap-6">
-                      <div>
-                        <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-black/55">
-                          Example
-                        </div>
-                        <div className="mt-3 font-display text-[22px] font-[900] leading-[1.06] tracking-[-0.03em]">
-                          “Zrób twist na Manhattan - ma być bardziej kawowy, ale nadal classy.”
-                        </div>
-                        <div className="mt-3 text-sm leading-7 text-black/65">
-                          Dostajesz recepturę, proporcje, metodę, garnish, wariacje i krótką notkę do menu.
-                        </div>
-                      </div>
-
-                      <div className="hidden sm:block shrink-0 rounded-full border border-black/10 bg-black/5 px-4 py-2 text-[12px] font-[850] tracking-[0.10em] uppercase text-black/70">
-                        AI assistant
-                      </div>
-                    </div>
-
-                    <div className="mt-6 text-sm text-black/70">
-                      W skrócie - mniej szukania, więcej serwisu. I zero “kto ostatnio zmieniał recepturę?”.
-                    </div>
-                  </div>
-                </NotchCard>
-              </motion.div>
-            </Reveal>
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-8 lg:px-10 pt-[clamp(84px,10vh,132px)] pb-[clamp(44px,7vh,96px)] flex flex-col">
+        <div className="">
+          <div className="flex items-center gap-3">
+            <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-white/55">02 - WHY MIXOLOGYAI</div>
+            <span className="barcode h-[10px] w-[120px] bg-white/20 border border-white/30" />
           </div>
 
-          {/* RIGHT */}
-          <div className="col-span-12 lg:col-span-5">
-            <Reveal delay={0.05}>
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-              >
-                <NotchCard
-                  variant="paper"
-                  notch="tr"
-                  className="relative overflow-hidden rounded-xl3 bg-white/60 backdrop-blur-md border border-black/10 shadow-soft"
-                >
-                  <div
-                    aria-hidden
-                    className={`pointer-events-none absolute inset-0 ${manhattanOverlay}`}
-                  />
-                  <div className="relative p-6">
-                    <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-black/55">
-                      Speed & consistency
-                    </div>
+          <h2 className="mt-5 font-display text-[clamp(34px,4.2vw,54px)] leading-[0.98] tracking-[-0.04em]">
+            Drinks that work.
+            <span className="block text-white/55">Recipes that scale - with an AI bartender.</span>
+          </h2>
 
-                    <div className="mt-5 space-y-4">
-                      <div className="flex items-end justify-between gap-6">
-                        <div className="min-w-0">
-                          <div className="text-sm font-[900] tracking-tight">
-                            Avg response
-                          </div>
-                          <div className="mt-1 text-xs text-black/60">
-                            od promptu do receptury
-                          </div>
-                        </div>
-                        <div className="font-display text-3xl font-[900] tracking-tight">
-                          <CountUp to={10} suffix="s" />
-                        </div>
-                      </div>
+          <p className="mt-5 max-w-[62ch] text-[15px] leading-7 text-white/70">
+            MixologyAI pomaga budować receptury, robi szybki sanity check balansu, liczy koszt porcji i pilnuje
+            spójności menu. Działa na Twoich zasadach - więc wynik jest użyteczny, a nie "kreatywny".
+          </p>
+        </div>
 
-                      <div className="h-px bg-black/10" />
+        <div className="relative lg:mt-10 py-10 w-full max-w-[944px] mx-auto">
+          <Glass className="flex justify-center mt-10" classGlassSize="h-80 sm:h-mixology-120" />
 
-                      <div className="flex items-end justify-between gap-6">
-                        <div className="min-w-0">
-                          <div className="text-sm font-[900] tracking-tight">
-                            Costing
-                          </div>
-                          <div className="mt-1 text-xs text-black/60">
-                            koszt + sugerowana cena
-                          </div>
-                        </div>
-                        <div className="font-display text-3xl font-[900] tracking-tight">
-                          <CountUp to={1} suffix=" min" />
-                        </div>
-                      </div>
+          <div className="hidden lg:block absolute top-0">
+            <div
+              className="relative w-56 min-h-64 bg-mixology-orange/5 backdrop-blur-lg border border-mixology-orange/30"
+              style={{ clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%)" }}>
+              <div className="absolute w-7 h-px bg-mixology-orange/30 top-5 right-0 origin-top-right rotate-45" />
+              <div className="px-4 py-6 flex flex-col gap-4 min-h-64">
+                <h5 className="font-bold text-lg text-mixology-bronze">Dekoracje</h5>
+                <p className="text-sm text-mixology-bronze/80">Wyglad zawsze jak najlepszy</p>
+                <div className="mt-auto flex flex-wrap gap-2">
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Wyglad
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Wybór
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Swoboda
+                  </p>
+                </div>
+              </div>
+            </div>
+            <svg className="absolute overflow-visible z-50 top-[20%] left-full">
+              <path d="M 0,0 L 80,0 L 170,65" fill="none" stroke="rgb(153, 39, 4)" strokeWidth="1.5" />
+              <circle cx={0} cy={0} r={4} fill="rgb(153, 39, 4)" />
+              <circle cx={170} cy={65} r={4} fill="rgb(153, 39, 4)" />
+            </svg>
+          </div>
 
-                      <div className="h-px bg-black/10" />
+          <div className="hidden lg:block absolute bottom-0">
+            <div
+              className="relative w-56 min-h-64 bg-mixology-orange/5 backdrop-blur-lg border border-mixology-orange/30"
+              style={{ clipPath: "polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%)" }}>
+              <div className="absolute w-7 h-px bg-mixology-orange/30 top-5 right-0 origin-top-right rotate-45" />
+              <div className="px-4 py-6 flex flex-col gap-4 min-h-64">
+                <h5 className="font-bold text-lg text-mixology-bronze">Szklo</h5>
+                <p className="text-sm text-mixology-bronze/80">
+                  Idealby wybor szkla pod wybrany koktajl aby zapewnic jak najlepsze doswiadczenie spozywania oraz
+                  zapamietnie chwili XD
+                </p>
+                <div className="mt-auto flex flex-wrap gap-2">
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Dopasowanie
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Koktajl
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Swoboda
+                  </p>
+                </div>
+              </div>
+            </div>
+            <svg className="absolute overflow-visible z-50 top-[80%] left-full">
+              <path d="M 0,0 L 80,0 L 170,-50" fill="none" stroke="rgb(153, 39, 4)" strokeWidth="1.5" />
+              <circle cx={0} cy={0} r={4} fill="rgb(153, 39, 4)" />
+              <circle cx={170} cy={-50} r={4} fill="rgb(153, 39, 4)" />
+            </svg>
+          </div>
 
-                      <div className="flex items-end justify-between gap-6">
-                        <div className="min-w-0">
-                          <div className="text-sm font-[900] tracking-tight">
-                            Consistency score
-                          </div>
-                          <div className="mt-1 text-xs text-black/60">
-                            spójność opisów i formatów menu
-                          </div>
-                        </div>
-                        <div className="font-display text-4xl font-[900] tracking-tight">
-                          <CountUp to={92} suffix="%" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </NotchCard>
-              </motion.div>
-            </Reveal>
+          <div className="hidden lg:block absolute top-1/2 right-0 -translate-y-1/2">
+            <div
+              className="relative w-56 min-h-64 bg-mixology-blue/5 backdrop-blur-lg border border-mixology-blue/30"
+              style={{ clipPath: "polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px)" }}>
+              <div className="absolute w-7 h-px bg-mixology-blue/30 top-5 left-0 origin-top-left -rotate-45" />
+              <div className="px-4 py-6 flex flex-col gap-4 min-h-64">
+                <h5 className="font-bold text-lg text-mixology-sky">Skladniki</h5>
+                <p className="text-sm text-mixology-sky/80">
+                  Skladniki sa zawsze wybierane dokladnie i selektywnie aby utrzymac najbardziej satysfakcjonujacy smak
+                </p>
+                <div className="mt-auto flex flex-wrap gap-2">
+                  <p className="w-fit px-2 py-1 bg-mixology-sky/10 border border-mixology-sky/30 rounded-full text-mixology-sky/80 text-xs">
+                    Smak
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-sky/10 border border-mixology-sky/30 rounded-full text-mixology-sky/80 text-xs">
+                    Wybór
+                  </p>
+                </div>
+              </div>
+            </div>
+            <svg className="absolute overflow-visible z-50 left-0 top-[80%]">
+              <path d="M 0,0 L -120,0 L -220,-120" fill="none" stroke="rgb(80, 190, 250)" strokeWidth="1.5" />
+              <circle cx={0} cy={0} r={4} fill="rgb(80, 190, 250)" />
+              <circle cx={-220} cy={-120} r={4} fill="rgb(80, 190, 250)" />
+            </svg>
+          </div>
+
+          <div className="lg:hidden flex flex-wrap justify-center gap-4">
+            <div className="relative w-full mixology-xs:w-56 min-h-64 bg-mixology-orange/5 backdrop-blur-lg border border-mixology-orange/30">
+              <div className="px-4 py-6 flex flex-col gap-4 min-h-64">
+                <h5 className="font-bold text-lg text-mixology-bronze">Dekoracje</h5>
+                <p className="text-sm text-mixology-bronze/80">Wyglad zawsze jak najlepszy</p>
+                <div className="mt-auto flex flex-wrap gap-2">
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Wyglad
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Wybór
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Swoboda
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative w-full mixology-xs:w-56 min-h-64 bg-mixology-blue/5 backdrop-blur-lg border border-mixology-blue/30">
+              <div className="px-4 py-6 flex flex-col gap-4 min-h-64">
+                <h5 className="font-bold text-lg text-mixology-sky">Skladniki</h5>
+                <p className="text-sm text-mixology-sky/80">
+                  Skladniki sa zawsze wybierane dokladnie i selektywnie aby utrzymac najbardziej satysfakcjonujacy smak
+                </p>
+                <div className="mt-auto flex flex-wrap gap-2">
+                  <p className="w-fit px-2 py-1 bg-mixology-sky/10 border border-mixology-sky/30 rounded-full text-mixology-sky/80 text-xs">
+                    Smak
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-sky/10 border border-mixology-sky/30 rounded-full text-mixology-sky/80 text-xs">
+                    Wybór
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative w-full mixology-xs:w-56 min-h-64 bg-mixology-orange/5 backdrop-blur-lg border border-mixology-orange/30">
+              <div className="px-4 py-6 flex flex-col gap-4 min-h-64">
+                <h5 className="font-bold text-lg text-mixology-bronze">Szklo</h5>
+                <p className="text-sm text-mixology-bronze/80">
+                  Idealby wybor szkla pod wybrany koktajl aby zapewnic jak najlepsze doswiadczenie spozywania oraz
+                  zapamietnie chwili XD
+                </p>
+                <div className="mt-auto flex flex-wrap gap-2">
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Dopasowanie
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Koktajl
+                  </p>
+                  <p className="w-fit px-2 py-1 bg-mixology-bronze/10 border border-mixology-bronze/30 rounded-full text-mixology-bronze/80 text-xs">
+                    Swoboda
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* FULL WIDTH - single strip */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-          className="mt-10"
-        >
-          <div className="mb-4 text-[11px] font-[850] tracking-[0.12em] uppercase text-black/55">
-            Co robi asystent
-          </div>
-
-          {/* full-bleed breakout from max-width container */}
+        <motion.div className="mt-10">
+          <div className="mb-4 text-[11px] font-[850] tracking-[0.12em] uppercase text-white/55">Co robi asystent</div>
           <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
             <div className="px-3 sm:px-6 lg:px-10">
               <FlowTiles items={tiles} speed={18} />

@@ -140,8 +140,8 @@ export default function ServiceDark() {
 
   return (
     <section id="services" data-header-theme="dark" className="relative w-full overflow-hidden bg-ink text-white">
-      <div className="pointer-events-none absolute -top-32 -left-32 h-[560px] w-[560px] rounded-full bg-white/5 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[720px] w-[720px] rounded-full bg-white/4 blur-3xl" />
+      <div className="pointer-events-none absolute top-20 left-32 h-[300px] w-[300px] rounded-full bg-white/5 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-28 -right-40 h-[360px] w-[360px] rounded-full bg-white/5 blur-3xl" />
 
       <div className="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10 py-[clamp(72px,9vh,120px)]">
         <div className="grid grid-cols-12 gap-x-4 gap-y-4 items-start">
@@ -198,7 +198,7 @@ export default function ServiceDark() {
               <div className="col-span-12 md:col-span-6">
                 <ServiceCard
                   s={services[0]}
-                  className="bg-glass-bronze border-glass-bronze shadow-glass-bronze"
+                  className="bg-glass-orange border-glass-orange shadow-glass-orange"
                   cardColor="200 130 60"
                 />
               </div>
@@ -219,7 +219,7 @@ export default function ServiceDark() {
               <div className="col-span-12 md:col-span-6">
                 <ServiceCard
                   s={services[3]}
-                  className="bg-glass-sky border-glass-sky shadow-glass-sky"
+                  className="bg-glass-blue border-glass-blue shadow-glass-blue"
                   cardColor="80 190 250"
                 />
               </div>

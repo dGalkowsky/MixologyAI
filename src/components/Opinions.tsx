@@ -39,7 +39,7 @@ function OpinionCard({ o }: { o: Opinion }) {
       whileHover={reduce ? undefined : { y: -2 }}
       transition={{ type: "spring", stiffness: 260, damping: 18 }}
       className={cx(
-        "relative w-[340px] sm:w-[380px] shrink-0 overflow-hidden rounded-xl3",
+        "relative w-[340px] sm:w-[380px] shrink-0 overflow-hidden",
         "border border-white/10 bg-white/[0.06] backdrop-blur-xl",
         "shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_25px_90px_rgba(0,0,0,0.55)]"
       )}
@@ -47,10 +47,10 @@ function OpinionCard({ o }: { o: Opinion }) {
       <div aria-hidden className={`pointer-events-none absolute inset-0 ${manhattanOverlay} opacity-[0.75]`} />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-xl3 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+        className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
       />
 
-      <div className="relative p-6">
+      <div className="relative p-6 flex flex-col h-full">
         <div className="flex items-start justify-between gap-4">
           <div className="text-[11px] font-[850] tracking-[0.12em] uppercase text-white/55">
             {o.metric}
@@ -62,7 +62,7 @@ function OpinionCard({ o }: { o: Opinion }) {
           “{o.quote}”
         </div>
 
-        <div className="mt-5 h-px bg-white/10" />
+        <div className="mt-auto pt-5 border-b border-white/10" />
 
         <div className="mt-5 flex items-start justify-between gap-4">
           <div>
@@ -208,8 +208,7 @@ export default function TestimonialsDark() {
       {/* optionally support #opinions too */}
       <div id="opinions" className="absolute -top-24" />
 
-      <div className="pointer-events-none absolute -top-32 -left-32 h-[560px] w-[560px] rounded-full bg-white/5 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[720px] w-[720px] rounded-full bg-white/4 blur-3xl" />
+
 
       <div className="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10 pt-[clamp(72px,9vh,110px)]">
         <div className="grid grid-cols-12 gap-x-10 gap-y-10 items-end">
